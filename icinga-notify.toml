@@ -1,0 +1,7 @@
+[mail]
+server = "localhost"
+port = 1025
+
+[mail.from]
+name = "OKO-1"
+mail = "no-reply@oko.redb.cz"
