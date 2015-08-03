@@ -1,37 +1,20 @@
 {{define "Subject"}}
-{{.NOTIFICATIONTYPE}} - {{.HOSTDISPLAYNAME}} - {{.SERVICEDISPLAYNAME}} is {{.HOSTSTATE}}
+{{env "NOTIFICATIONTYPE"}} - {{env "HOSTDISPLAYNAME"}} - {{env "SERVICEDISPLAYNAME"}} is {{env "HOSTSTATE"}}
 {{end}}
 
 {{define "Content"}}
-***** Icinga  *****
+***** OKO  *****
 
-Notification Type: {{.NOTIFICATIONTYPE}}
+Notification Type: {{env "NOTIFICATIONTYPE"}}
 
-Service: {{.SERVICEDESC}}
-Host: {{.HOSTALIAS}}
-Address: {{.HOSTADDRESS}}
-State: {{.SERVICESTATE}}
+Service: {{env "SERVICEDESC"}}
+Host: {{env "HOSTALIAS"}}
+Address: {{env "HOSTADDRESS"}}
+State: {{env "SERVICESTATE"}}
 
-Date/Time: {{.LONGDATETIME}}
+Date/Time: {{env "LONGDATETIME"}}
 
-Additional Info: {{.SERVICEOUTPUT}}
+Additional Info: {{env "SERVICEOUTPUT"}}
 
-Comment: [{{.NOTIFICATIONAUTHORNAME}}] {{.NOTIFICATIONCOMMENT}}
-{{end}}
-
-{{define "Plain"}}
-***** Icinga  *****
-
-Notification Type: {{.NOTIFICATIONTYPE}}
-
-Service: {{.SERVICEDESC}}
-Host: {{.HOSTALIAS}}
-Address: {{.HOSTADDRESS}}
-State: {{.SERVICESTATE}}
-
-Date/Time: {{.LONGDATETIME}}
-
-Additional Info: {{.SERVICEOUTPUT}}
-
-Comment: [{{.NOTIFICATIONAUTHORNAME}}] {{.NOTIFICATIONCOMMENT}}
+Comment: [{{env "NOTIFICATIONAUTHORNAME"}}] {{env "NOTIFICATIONCOMMENT"}}
 {{end}}

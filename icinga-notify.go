@@ -58,18 +58,16 @@ func main() {
 		log.Fatal("Recipient is not set")
 	}
 
-	tpl := template.Must(template.ParseFiles("layout.tpl", fmt.Sprintf("%s.tpl", ntype)))
+	funcMap := template.FuncMap{
+		"env": Env,
+	}
+
+	tpl := template.Must(template.New("").Funcs(funcMap).ParseFiles(fmt.Sprintf("%s.tpl", ntype)))
 	if tpl.Lookup("Subject") == nil {
 		log.Fatal("Template has no Subject defined")
 	}
-	if tpl.Lookup("Layout") == nil {
-		log.Fatal("Template has no Layout part defined")
-	}
 	if tpl.Lookup("Content") == nil {
 		log.Fatal("Template has no Content part defined")
-	}
-	if tpl.Lookup("Plain") == nil {
-		log.Fatal("Template has no Plain part defined")
 	}
 
 	m := gomail.NewMessage(gomail.SetCharset("UTF-8"))
@@ -79,24 +77,29 @@ func main() {
 		"Subject": {expand(tpl, "Subject")},
 	})
 
-	m.SetBody("text/html", expand(tpl, "Layout"))
-	m.AddAlternative("text/plain", expand(tpl, "Plain"))
+	var buffer bytes.Buffer
+	err := tpl.ExecuteTemplate(&buffer, "Content", tpl)
+	if err != nil {
+		panic(err)
+	}
+
+	m.SetBody("text/txt", buffer.String())
 
 	checkError(mail(m))
 }
 
-func expand(tpl *template.Template, t string) string {
-	var buffer bytes.Buffer
-
+func Env(name string) string {
 	env := make(map[string]string)
 	for _, i := range os.Environ() {
 		sep := strings.Index(i, "=")
 		env[i[0:sep]] = i[sep+1:]
 	}
 
-	tpl.ExecuteTemplate(&buffer, t, env)
+	if val, ok := env[name]; ok {
+		return val
+	}
 
-	return buffer.String()
+	return fmt.Sprintf("$%s", name)
 }
 
 func mail(message *gomail.Message) error {
@@ -105,6 +108,7 @@ func mail(message *gomail.Message) error {
 		viper.GetString("mail.user"),
 		viper.GetString("mail.password"),
 		viper.GetInt("mail.port"),
+		// gomail.SetTLSConfig(&tls.Config{InsecureSkipVerify: true}),
 	)
 
 	return mailer.Send(message)
