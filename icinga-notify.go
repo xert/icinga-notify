@@ -70,20 +70,28 @@ func main() {
 		log.Fatal("Template has no Content part defined")
 	}
 
+	var buffer bytes.Buffer
+
+	err := tpl.ExecuteTemplate(&buffer, "Subject", tpl)
+	if err != nil {
+		panic(err)
+	}
+	subject := buffer.String()
+
+	err = tpl.ExecuteTemplate(&buffer, "Content", tpl)
+	if err != nil {
+		panic(err)
+	}
+	body := buffer.String()
+
 	m := gomail.NewMessage(gomail.SetCharset("UTF-8"))
 	m.SetHeaders(map[string][]string{
 		"From":    {m.FormatAddress(viper.GetString("mail.from.mail"), viper.GetString("mail.from.name"))},
 		"To":      {viper.GetString("USEREMAIL")},
-		"Subject": {expand(tpl, "Subject")},
+		"Subject": {subject},
 	})
 
-	var buffer bytes.Buffer
-	err := tpl.ExecuteTemplate(&buffer, "Content", tpl)
-	if err != nil {
-		panic(err)
-	}
-
-	m.SetBody("text/txt", buffer.String())
+	m.SetBody("text/txt", body)
 
 	checkError(mail(m))
 }
