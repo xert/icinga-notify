@@ -2,8 +2,7 @@
 {{env "NOTIFICATIONTYPE"}} - {{env "HOSTDISPLAYNAME"}} is {{env "HOSTSTATE"}}
 {{end}}
 
-{{define "Content"}}
-***** OKO-1  *****
+{{define "Content"}}***** OKO-1  *****
 
 Notification Type: {{env "NOTIFICATIONTYPE"}}
 

@@ -1,9 +1,6 @@
-{{define "Subject"}}
-{{env "NOTIFICATIONTYPE"}} - {{env "HOSTDISPLAYNAME"}} - {{env "SERVICEDISPLAYNAME"}} is {{env "HOSTSTATE"}}
-{{end}}
+{{define "Subject"}}{{env "NOTIFICATIONTYPE"}} - {{env "HOSTDISPLAYNAME"}} - {{env "SERVICEDISPLAYNAME"}} is {{env "HOSTSTATE"}}{{end}}
 
-{{define "Content"}}
-***** OKO  *****
+{{define "Content"}}***** OKO  *****
 
 Notification Type: {{env "NOTIFICATIONTYPE"}}
 

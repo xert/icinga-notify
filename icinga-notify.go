@@ -77,6 +77,7 @@ func main() {
 		panic(err)
 	}
 	subject := buffer.String()
+	buffer.Reset()
 
 	err = tpl.ExecuteTemplate(&buffer, "Content", tpl)
 	if err != nil {
@@ -86,12 +87,12 @@ func main() {
 
 	m := gomail.NewMessage(gomail.SetCharset("UTF-8"))
 	m.SetHeaders(map[string][]string{
-		"From":    {m.FormatAddress(viper.GetString("mail.from.mail"), viper.GetString("mail.from.name"))},
+		"From":    {m.FormatAddress(viper.GetString("from.mail"), viper.GetString("from.name"))},
 		"To":      {viper.GetString("USEREMAIL")},
 		"Subject": {subject},
 	})
 
-	m.SetBody("text/txt", body)
+	m.SetBody("text/plain", body)
 
 	checkError(mail(m))
 }
@@ -112,10 +113,10 @@ func Env(name string) string {
 
 func mail(message *gomail.Message) error {
 	mailer := gomail.NewMailer(
-		viper.GetString("mail.server"),
-		viper.GetString("mail.user"),
-		viper.GetString("mail.password"),
-		viper.GetInt("mail.port"),
+		viper.GetString("smtp.server"),
+		viper.GetString("smtp.user"),
+		viper.GetString("smtp.password"),
+		viper.GetInt("smtp.port"),
 		// gomail.SetTLSConfig(&tls.Config{InsecureSkipVerify: true}),
 	)
 
